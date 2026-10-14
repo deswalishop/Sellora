@@ -19,7 +19,7 @@ export default async function OnboardingPage() {
     .select("id")
     .eq("owner_id", user.id)
     .limit(1);
-  if (stores && stores.length > 0) redirect("/");
+  if (stores && stores.length > 0) redirect("/overview");
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-canvas px-4 py-10">

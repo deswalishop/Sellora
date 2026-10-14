@@ -54,8 +54,8 @@ export async function signInAction(
   });
 
   if (error) return { error: error.message };
-  // Onboarding (M1.2) will take over this redirect.
-  redirect("/");
+  // Dashboard overview; the (dashboard) layout sends storeless users to onboarding.
+  redirect("/overview");
 }
 
 /** Google OAuth sign-in. */

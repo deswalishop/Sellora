@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { signOutAction } from "@/features/auth/actions";
 
 const NAV = [
-  { href: "/", label: "Overview" },
+  { href: "/overview", label: "Overview" },
   { href: "/orders", label: "Orders" },
   { href: "/products", label: "Products" },
   { href: "/customers", label: "Customers" },
