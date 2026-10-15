@@ -22,15 +22,15 @@ export function ProductRowActions({ id, status }: { id: string; status: Status }
   }
 
   const linkCls =
-    "rounded-lg px-2 py-1 text-xs font-medium transition hover:bg-canvas disabled:opacity-50";
+    "rounded-lg px-2 py-1 text-xs font-medium transition hover:bg-neutral-100 disabled:opacity-50";
 
   return (
     <div className="flex flex-wrap items-center gap-1">
-      <Link href={`/products/${id}`} className={`${linkCls} text-emerald-950`}>
+      <Link href={`/products/${id}`} className={`${linkCls} text-neutral-900`}>
         Edit
       </Link>
       {status === "active" ? (
-        <button disabled={busy} onClick={() => run(() => updateProductStatus(id, "hidden"))} className={`${linkCls} text-muted`}>
+        <button disabled={busy} onClick={() => run(() => updateProductStatus(id, "hidden"))} className={`${linkCls} text-neutral-500`}>
           Hide
         </button>
       ) : (
@@ -38,7 +38,7 @@ export function ProductRowActions({ id, status }: { id: string; status: Status }
           Show
         </button>
       )}
-      <button disabled={busy} onClick={() => run(() => duplicateProduct(id))} className={`${linkCls} text-muted`}>
+      <button disabled={busy} onClick={() => run(() => duplicateProduct(id))} className={`${linkCls} text-neutral-500`}>
         Duplicate
       </button>
       <button

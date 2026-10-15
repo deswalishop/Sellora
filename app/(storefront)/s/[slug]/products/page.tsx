@@ -1,8 +1,9 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ProductCard, type CardProduct } from "@/features/storefront/product-card";
 
-/** Product listing with search + category filter. */
+/** Dawn-style collection page: title, product count, filter pills, grid. */
 export default async function ProductsListing({
   params,
   searchParams,
@@ -22,7 +23,7 @@ export default async function ProductsListing({
     .maybeSingle();
   if (!store) notFound();
   const s = store as { id: string; name: string; brand_color: string };
-  const brand = s.brand_color || "#065F46";
+  const brand = s.brand_color || "#121212";
 
   const { data: categories } = await supabase
     .from("categories")
@@ -47,48 +48,58 @@ export default async function ProductsListing({
   const { data: products } = await query;
   const items = (products ?? []) as CardProduct[];
 
+  const activeCat = ((categories ?? []) as { id: string; name: string; slug: string }[]).find(
+    (c) => c.slug === category
+  );
+
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
-      <h1 className="text-2xl font-bold text-ink">
-        {q ? `Results for "${q}"` : category ? "Products" : "All products"}
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+      <h1 className="text-3xl font-normal tracking-tight text-neutral-900 sm:text-4xl">
+        {q ? `Results for "${q}"` : activeCat ? activeCat.name : "Products"}
       </h1>
-      <p className="mt-1 text-sm text-muted">
+      <p className="mt-2 text-sm text-neutral-500">
         {items.length} product{items.length === 1 ? "" : "s"}
       </p>
 
       {categories && (categories as unknown[]).length > 0 && (
-        <div className="mt-4 flex flex-wrap gap-2">
-          <a
+        <div className="mt-6 flex flex-wrap gap-2 border-y border-neutral-200 py-4">
+          <Link
             href={`/s/${slug}/products${q ? `?q=${encodeURIComponent(q)}` : ""}`}
-            className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-              !category ? "text-white" : "border border-slate-200 bg-white text-ink"
+            className={`rounded-full px-4 py-2 text-sm transition ${
+              !category
+                ? "font-medium text-white"
+                : "border border-neutral-300 text-neutral-700 hover:border-neutral-900"
             }`}
             style={!category ? { backgroundColor: brand } : undefined}
           >
             All
-          </a>
+          </Link>
           {((categories ?? []) as { id: string; name: string; slug: string }[]).map((c) => (
-            <a
+            <Link
               key={c.id}
               href={`/s/${slug}/products?category=${c.slug}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-                category === c.slug ? "text-white" : "border border-slate-200 bg-white text-ink"
+              className={`rounded-full px-4 py-2 text-sm transition ${
+                category === c.slug
+                  ? "font-medium text-white"
+                  : "border border-neutral-300 text-neutral-700 hover:border-neutral-900"
               }`}
               style={category === c.slug ? { backgroundColor: brand } : undefined}
             >
               {c.name}
-            </a>
+            </Link>
           ))}
         </div>
       )}
 
       {items.length === 0 ? (
-        <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-10 text-center">
-          <p className="font-semibold text-ink">No products found</p>
-          <p className="mt-1 text-sm text-muted">Try a different search or category.</p>
+        <div className="mt-8 py-16 text-center">
+          <p className="text-lg text-neutral-900">No products found</p>
+          <p className="mt-1 text-sm text-neutral-500">
+            Try checking your spelling or using more general words.
+          </p>
         </div>
       ) : (
-        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
           {items.map((p) => (
             <ProductCard key={p.id} slug={slug} product={p} brandColor={brand} />
           ))}

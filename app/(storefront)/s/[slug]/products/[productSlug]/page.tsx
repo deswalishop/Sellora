@@ -82,28 +82,19 @@ export default async function ProductDetailPage({
     .map((i) => i.storage_path);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
-      <ProductBuyer
-        slug={slug}
-        productId={data.product.id}
-        title={data.product.title}
-        regularPrice={data.product.regular_price}
-        salePrice={data.product.sale_price}
-        stock={data.product.stock}
-        images={images}
-        variants={data.product.product_variants ?? []}
-        brandColor={brand}
-        whatsappNumber={data.settings.whatsapp_number ?? null}
-        codAvailable={Boolean(data.settings.cod_enabled)}
-      />
-      {data.product.description && (
-        <div className="mt-10 rounded-3xl border border-slate-200 bg-white p-6">
-          <h2 className="font-bold text-ink">Description</h2>
-          <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-muted">
-            {data.product.description}
-          </p>
-        </div>
-      )}
-    </div>
+    <ProductBuyer
+      slug={slug}
+      productId={data.product.id}
+      title={data.product.title}
+      regularPrice={data.product.regular_price}
+      salePrice={data.product.sale_price}
+      stock={data.product.stock}
+      description={data.product.description}
+      images={images}
+      variants={data.product.product_variants ?? []}
+      brandColor={brand}
+      whatsappNumber={data.settings.whatsapp_number ?? null}
+      codAvailable={Boolean(data.settings.cod_enabled)}
+    />
   );
 }

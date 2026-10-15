@@ -25,7 +25,7 @@ export async function generateMetadata({
   };
 }
 
-/** Storefront home: hero, categories, featured, new arrivals (PRD section 23). */
+/** Dawn-style storefront home: image banner, featured products, collections. */
 export default async function StoreHome({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const supabase = await createClient();
@@ -38,21 +38,21 @@ export default async function StoreHome({ params }: { params: Promise<{ slug: st
     .maybeSingle();
   if (!store) notFound();
   const s = store as { id: string; name: string; brand_color: string };
-  const brand = s.brand_color || "#065F46";
+  const brand = s.brand_color || "#121212";
 
   const { data: settings } = await supabase
     .from("store_settings")
-    .select("announcement_bar, hero_title, hero_subtitle")
+    .select("hero_title, hero_subtitle")
     .eq("store_id", s.id)
     .maybeSingle();
-  const st = (settings ?? {}) as { announcement_bar?: string; hero_title?: string; hero_subtitle?: string };
+  const st = (settings ?? {}) as { hero_title?: string; hero_subtitle?: string };
 
   const { data: categories } = await supabase
     .from("categories")
     .select("id, name, slug")
     .eq("store_id", s.id)
     .order("sort_order")
-    .limit(12);
+    .limit(6);
 
   const base = () =>
     supabase
@@ -63,23 +63,29 @@ export default async function StoreHome({ params }: { params: Promise<{ slug: st
       .is("deleted_at", null);
 
   const { data: featured } = await base().eq("is_featured", true).limit(8);
-  const { data: newest } = await base().order("created_at", { ascending: false }).limit(8);
-  const { data: onSale } = await base().not("sale_price", "is", null).limit(8);
+  const { data: newest } = await base().order("created_at", { ascending: false }).limit(4);
+  const showFeatured = featured && featured.length > 0 ? featured : newest;
 
   const section = (title: string, items: CardProduct[] | null) => {
     if (!items || items.length === 0) return null;
     return (
-      <section className="mx-auto max-w-6xl px-4 py-8">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-ink">{title}</h2>
-          <Link href={`/s/${slug}/products`} className="text-sm font-semibold hover:underline" style={{ color: brand }}>
-            View all →
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
+        <h2 className="text-center text-2xl font-normal tracking-tight text-neutral-900 sm:text-3xl">
+          {title}
+        </h2>
+        <div className="mx-auto mt-8 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
           {items.map((p) => (
             <ProductCard key={p.id} slug={slug} product={p} brandColor={brand} />
           ))}
+        </div>
+        <div className="mt-10 text-center">
+          <Link
+            href={`/s/${slug}/products`}
+            className="inline-block rounded px-10 py-3.5 text-[15px] font-medium text-white"
+            style={{ backgroundColor: brand }}
+          >
+            View all
+          </Link>
         </div>
       </section>
     );
@@ -87,57 +93,82 @@ export default async function StoreHome({ params }: { params: Promise<{ slug: st
 
   return (
     <div>
-      {st.announcement_bar && (
-        <div className="px-4 py-2 text-center text-xs font-medium text-white" style={{ backgroundColor: `${brand}dd` }}>
-          {st.announcement_bar}
+      {/* Dawn image banner */}
+      <section className="relative flex min-h-[420px] items-center justify-center overflow-hidden bg-neutral-900 sm:min-h-[520px]">
+        <div
+          className="absolute inset-0 opacity-90"
+          style={{
+            background: `linear-gradient(135deg, ${brand} 0%, #1c1c1c 100%)`,
+          }}
+        />
+        <div className="relative z-10 mx-auto max-w-3xl px-6 py-20 text-center">
+          <h1 className="text-4xl font-normal tracking-tight text-white sm:text-6xl">
+            {st.hero_title || s.name}
+          </h1>
+          <p className="mx-auto mt-4 max-w-xl text-base text-white/80 sm:text-lg">
+            {st.hero_subtitle || "Quality products delivered to your doorstep. Cash on delivery available across Pakistan."}
+          </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href={`/s/${slug}/products`}
+              className="rounded bg-white px-10 py-3.5 text-[15px] font-medium text-neutral-900 transition hover:bg-neutral-100"
+            >
+              Shop now
+            </Link>
+          </div>
         </div>
-      )}
-
-      {/* Hero */}
-      <section className="px-4 py-12 text-center text-white sm:py-16" style={{ backgroundColor: brand }}>
-        <h1 className="mx-auto max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl">
-          {st.hero_title || `Welcome to ${s.name}`}
-        </h1>
-        <p className="mx-auto mt-3 max-w-xl text-sm text-white/85 sm:text-base">
-          {st.hero_subtitle || "Quality products delivered to your doorstep. Cash on delivery available."}
-        </p>
-        <Link
-          href={`/s/${slug}/products`}
-          className="mt-6 inline-block rounded-full bg-white px-8 py-3 text-sm font-bold transition hover:brightness-95"
-          style={{ color: brand }}
-        >
-          Shop now
-        </Link>
       </section>
 
-      {/* Categories */}
+      {/* Collection list */}
       {categories && categories.length > 0 && (
-        <section className="mx-auto max-w-6xl px-4 py-8">
-          <h2 className="mb-4 text-xl font-bold text-ink">Shop by category</h2>
-          <div className="flex flex-wrap gap-2" style={{ "--brand": brand } as React.CSSProperties}>
+        <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
+          <h2 className="text-center text-2xl font-normal tracking-tight text-neutral-900 sm:text-3xl">
+            Shop by category
+          </h2>
+          <div className="mx-auto mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
             {(categories as { id: string; name: string; slug: string }[]).map((c) => (
               <Link
                 key={c.id}
-                href={`/s/${slug}/products?category=${c.slug}`}
-                className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-ink transition hover:border-transparent hover:bg-[var(--brand)] hover:text-white"
+                href={`/s/${slug}/products?category=${encodeURIComponent(c.slug)}`}
+                className="group relative overflow-hidden rounded-lg bg-neutral-100 py-10 text-center transition hover:bg-neutral-200"
               >
-                {c.name}
+                <span className="text-lg font-medium text-neutral-900">{c.name}</span>
+                <span className="mt-1 block text-sm text-neutral-500 group-hover:underline underline-offset-4">
+                  Shop now
+                </span>
               </Link>
             ))}
           </div>
         </section>
       )}
 
-      {section("Featured products", featured as CardProduct[])}
-      {section("New arrivals", newest as CardProduct[])}
-      {section("On sale", onSale as CardProduct[])}
+      {section("Featured products", showFeatured as CardProduct[] | null)}
 
-      {!featured?.length && !newest?.length && (
-        <section className="mx-auto max-w-6xl px-4 py-16 text-center">
-          <p className="font-semibold text-ink">New products coming soon</p>
-          <p className="mt-1 text-sm text-muted">This store is just getting started — check back shortly.</p>
-        </section>
-      )}
+      {/* Image with text */}
+      <section className="border-t border-neutral-200 bg-neutral-50">
+        <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-14 sm:grid-cols-2 sm:px-6">
+          <div className="flex aspect-[4/3] items-center justify-center rounded-lg bg-neutral-200 text-6xl font-semibold text-neutral-400">
+            {s.name.charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <h2 className="text-2xl font-normal tracking-tight text-neutral-900 sm:text-3xl">
+              Why shop with {s.name}?
+            </h2>
+            <ul className="mt-4 space-y-3 text-[15px] text-neutral-600">
+              <li className="flex gap-3"><span style={{ color: brand }}>✓</span> Cash on delivery, anywhere in Pakistan</li>
+              <li className="flex gap-3"><span style={{ color: brand }}>✓</span> Order on WhatsApp in one tap</li>
+              <li className="flex gap-3"><span style={{ color: brand }}>✓</span> 7-day easy exchange</li>
+            </ul>
+            <Link
+              href={`/s/${slug}/products`}
+              className="mt-6 inline-block rounded px-10 py-3.5 text-[15px] font-medium text-white"
+              style={{ backgroundColor: brand }}
+            >
+              Shop now
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
