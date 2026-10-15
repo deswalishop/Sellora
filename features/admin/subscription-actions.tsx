@@ -34,12 +34,12 @@ export function SubscriptionActions({ subscriptionId }: { subscriptionId: string
         min={1}
         max={365}
         aria-label="Days to extend"
-        className="h-8 w-16 rounded-lg border border-slate-200 px-2 text-xs"
+        className="h-8 w-16 rounded-lg border border-neutral-200 px-2 text-xs"
       />
       <button
         disabled={pending}
         onClick={() => run(() => adminExtendSubscription({ subscriptionId, days: Number(days) || 14 }), `Extended ${days} days`)}
-        className="rounded-full border border-slate-300 px-3 py-1.5 text-xs font-semibold hover:border-emerald-950 disabled:opacity-50"
+        className="rounded-full border border-slate-300 px-3 py-1.5 text-xs font-semibold hover:border-neutral-900 disabled:opacity-50"
       >
         Extend
       </button>
@@ -47,7 +47,7 @@ export function SubscriptionActions({ subscriptionId }: { subscriptionId: string
         value={plan}
         onChange={(e) => setPlan(e.target.value)}
         aria-label="Plan"
-        className="h-8 rounded-lg border border-slate-200 px-2 text-xs"
+        className="h-8 rounded-lg border border-neutral-200 px-2 text-xs"
       >
         {PLANS.map((p) => (
           <option key={p} value={p} className="capitalize">{p}</option>
@@ -56,7 +56,7 @@ export function SubscriptionActions({ subscriptionId }: { subscriptionId: string
       <button
         disabled={pending}
         onClick={() => run(() => adminChangePlan({ subscriptionId, planSlug: plan as (typeof PLANS)[number] }), `Plan → ${plan}`)}
-        className="rounded-full bg-emerald-950 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-950/90 disabled:opacity-50"
+        className="rounded-full bg-neutral-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-neutral-900/90 disabled:opacity-50"
       >
         Set plan
       </button>
