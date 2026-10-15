@@ -2,16 +2,17 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { formatRs } from "@/lib/format";
+import { PageHeader, Card, Badge } from "@/features/dashboard/ui";
 
-const STATUS_STYLES: Record<string, string> = {
-  pending: "bg-amber-100 text-amber-800",
-  confirmed: "bg-blue-100 text-blue-800",
-  packed: "bg-violet-100 text-violet-800",
-  shipped: "bg-indigo-100 text-indigo-800",
-  delivered: "bg-emerald-100 text-emerald-800",
-  cancelled: "bg-red-100 text-red-700",
-  returned: "bg-slate-200 text-slate-600",
-  refunded: "bg-slate-200 text-slate-600",
+const STATUS_TONE: Record<string, "success" | "attention" | "warning" | "critical" | "info" | "neutral"> = {
+  pending: "attention",
+  confirmed: "info",
+  packed: "info",
+  shipped: "warning",
+  delivered: "success",
+  cancelled: "critical",
+  returned: "neutral",
+  refunded: "neutral",
 };
 
 function pctChange(curr: number, prev: number): string | null {
@@ -137,157 +138,151 @@ export default async function DashboardOverview() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold text-ink">
-            {greeting()}, {firstName}! 👋
-          </h1>
-          <p className="mt-1 text-sm text-muted">
-            {curr.length > 0
-              ? "Your store is performing well. Here's a quick overview."
-              : "Welcome to Sellora! Add products and share your store link to get your first order."}
-          </p>
-        </div>
-        <Link
-          href={`/s/${s.slug}`}
-          target="_blank"
-          className="rounded-full border border-slate-300 px-5 py-2.5 text-sm font-semibold text-ink transition hover:border-emerald-950"
-        >
-          View my store
-        </Link>
-      </div>
+    <div>
+      <PageHeader
+        title={`${greeting()}, ${firstName}`}
+        subtitle={
+          curr.length > 0
+            ? "Here's what's happening across your store today."
+            : "Welcome to Sellora! Add products and share your store link to get your first order."
+        }
+        actions={
+          <a
+            href={`/s/${s.slug}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm font-medium text-neutral-800 transition hover:border-neutral-500"
+          >
+            View store
+          </a>
+        }
+      />
 
       {/* KPI cards */}
       <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
         {kpis.map((k) => (
-          <div key={k.label} className="rounded-3xl border border-slate-200/70 bg-white p-5 shadow-[0_8px_30px_rgba(6,95,70,0.06)]">
-            <p className="text-xs font-medium uppercase tracking-wide text-muted">{k.label}</p>
-            <p className="mt-2 text-2xl font-bold text-ink">{k.value}</p>
+          <div key={k.label} className="rounded-xl border border-neutral-200 bg-white p-5">
+            <p className="text-[13px] text-neutral-500">{k.label}</p>
+            <p className="mt-1 text-2xl font-semibold text-neutral-900">{k.value}</p>
             <p className="mt-1 text-xs">
-              {k.delta && <span className="font-semibold text-emerald-700">{k.delta} </span>}
-              <span className="text-muted">{k.sub}</span>
+              {k.delta && <span className="font-medium text-neutral-700">{k.delta} </span>}
+              <span className="text-neutral-500">{k.sub}</span>
             </p>
           </div>
         ))}
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-3">
+      <div className="mt-4 grid gap-4 xl:grid-cols-3">
         {/* Sales chart */}
-        <div className="rounded-3xl border border-slate-200/70 bg-white p-6 shadow-[0_8px_30px_rgba(6,95,70,0.06)] xl:col-span-2">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-muted">Sales Overview</p>
-              <p className="mt-1 text-xl font-bold text-ink">{formatRs(salesCurr)}</p>
-            </div>
-            <span className="text-xs text-muted">Last 7 days</span>
-          </div>
-          <div className="mt-6 flex h-40 items-end gap-2 sm:gap-3">
-            {days.map((d) => (
-              <div key={d.label} className="flex flex-1 flex-col items-center gap-2">
-                <div className="flex w-full flex-1 items-end">
-                  <div
-                    className="w-full rounded-t-lg bg-gradient-to-t from-emerald-900 to-emerald-500/80 transition-all"
-                    style={{ height: `${Math.max(4, (d.value / maxDay) * 100)}%` }}
-                    title={`${d.label}: ${formatRs(d.value)}`}
-                  />
+        <Card title="Sales" className="xl:col-span-2" actions={<span className="text-xs text-neutral-500">Last 7 days</span>}>
+          <div className="px-5 py-5">
+            <p className="text-xl font-semibold text-neutral-900">{formatRs(salesCurr)}</p>
+            <div className="mt-6 flex h-40 items-end gap-2 sm:gap-3">
+              {days.map((d) => (
+                <div key={d.label} className="flex flex-1 flex-col items-center gap-2">
+                  <div className="flex w-full flex-1 items-end">
+                    <div
+                      className="w-full rounded-t bg-neutral-900/90"
+                      style={{ height: `${Math.max(4, (d.value / maxDay) * 100)}%` }}
+                      title={`${d.label}: ${formatRs(d.value)}`}
+                    />
+                  </div>
+                  <span className="text-[11px] text-neutral-500">{d.label}</span>
                 </div>
-                <span className="text-[11px] text-muted">{d.label}</span>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        </Card>
 
         {/* Low stock */}
-        <div className="rounded-3xl border border-slate-200/70 bg-white p-6 shadow-[0_8px_30px_rgba(6,95,70,0.06)]">
-          <div className="flex items-center justify-between">
-            <p className="font-semibold text-ink">Low stock alerts</p>
-            <Link href="/products" className="text-xs font-semibold text-emerald-950 hover:underline">
+        <Card
+          title="Low stock"
+          actions={
+            <Link href="/products" className="text-[13px] font-medium text-neutral-600 hover:text-neutral-900 hover:underline">
               View all
             </Link>
-          </div>
+          }
+        >
           {(lowStock ?? []).length === 0 ? (
-            <p className="mt-4 text-sm text-muted">All products are well stocked. 🎉</p>
+            <p className="px-5 py-6 text-sm text-neutral-500">All products are well stocked.</p>
           ) : (
-            <ul className="mt-4 space-y-3">
+            <ul className="divide-y divide-neutral-100">
               {(lowStock as { id: string; title: string; stock: number }[]).map((p) => (
-                <li key={p.id} className="flex items-center justify-between text-sm">
-                  <span className="truncate font-medium text-ink">{p.title}</span>
-                  <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${p.stock === 0 ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-800"}`}>
+                <li key={p.id} className="flex items-center justify-between gap-2 px-5 py-3 text-sm">
+                  <span className="truncate font-medium text-neutral-900">{p.title}</span>
+                  <Badge tone={p.stock === 0 ? "critical" : "attention"}>
                     {p.stock === 0 ? "Out of stock" : `${p.stock} left`}
-                  </span>
+                  </Badge>
                 </li>
               ))}
             </ul>
           )}
-        </div>
+        </Card>
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-3">
+      <div className="mt-4 grid gap-4 xl:grid-cols-3">
         {/* Recent orders */}
-        <div className="rounded-3xl border border-slate-200/70 bg-white p-6 shadow-[0_8px_30px_rgba(6,95,70,0.06)] xl:col-span-2">
-          <div className="flex items-center justify-between">
-            <p className="font-semibold text-ink">Recent Orders</p>
-            <Link href="/orders" className="text-xs font-semibold text-emerald-950 hover:underline">
-              View All
+        <Card
+          title="Recent orders"
+          className="xl:col-span-2"
+          actions={
+            <Link href="/orders" className="text-[13px] font-medium text-neutral-600 hover:text-neutral-900 hover:underline">
+              View all
             </Link>
-          </div>
+          }
+        >
           {all.length === 0 ? (
-            <div className="py-10 text-center">
-              <p className="text-sm font-medium text-ink">No orders yet</p>
-              <p className="mt-1 text-xs text-muted">Share your store link on WhatsApp to get your first order.</p>
+            <div className="px-5 py-10 text-center">
+              <p className="text-sm font-medium text-neutral-900">No orders yet</p>
+              <p className="mt-1 text-[13px] text-neutral-500">Share your store link on WhatsApp to get your first order.</p>
             </div>
           ) : (
-            <ul className="mt-4 divide-y divide-slate-100">
+            <ul className="divide-y divide-neutral-100">
               {all.slice(0, 5).map((o) => (
                 <li key={o.id}>
-                  <Link href={`/orders/${o.id}`} className="flex items-center gap-3 py-3 transition hover:bg-canvas/60">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-canvas text-sm font-bold text-emerald-950">
-                      {o.customer_name.charAt(0).toUpperCase()}
-                    </div>
+                  <Link href={`/orders/${o.id}`} className="flex items-center gap-3 px-5 py-3 transition hover:bg-neutral-50">
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold text-ink">
+                      <p className="truncate text-sm font-medium text-neutral-900">
                         <span className="font-mono">#{o.order_number}</span> · {o.customer_name}
                       </p>
-                      <p className="text-xs text-muted">
+                      <p className="text-xs text-neutral-500">
                         {new Date(o.created_at).toLocaleDateString("en-PK", { day: "numeric", month: "short" })} · {o.payment_method.toUpperCase()}
                       </p>
                     </div>
-                    <p className="shrink-0 text-sm font-bold text-ink">{formatRs(o.total)}</p>
-                    <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${STATUS_STYLES[o.status] ?? "bg-slate-100 text-muted"}`}>
-                      {o.status}
-                    </span>
+                    <p className="shrink-0 text-sm font-medium text-neutral-900">{formatRs(o.total)}</p>
+                    <Badge tone={STATUS_TONE[o.status] ?? "neutral"}>{o.status}</Badge>
                   </Link>
                 </li>
               ))}
             </ul>
           )}
-        </div>
+        </Card>
 
         {/* Top products */}
-        <div className="rounded-3xl border border-slate-200/70 bg-white p-6 shadow-[0_8px_30px_rgba(6,95,70,0.06)]">
-          <div className="flex items-center justify-between">
-            <p className="font-semibold text-ink">Top Products</p>
-            <Link href="/products" className="text-xs font-semibold text-emerald-950 hover:underline">
-              View All
+        <Card
+          title="Top products"
+          actions={
+            <Link href="/products" className="text-[13px] font-medium text-neutral-600 hover:text-neutral-900 hover:underline">
+              View all
             </Link>
-          </div>
+          }
+        >
           {topProducts.length === 0 ? (
-            <p className="mt-4 text-sm text-muted">No sales yet — your best sellers will appear here.</p>
+            <p className="px-5 py-6 text-sm text-neutral-500">No sales yet — your best sellers will appear here.</p>
           ) : (
-            <ul className="mt-4 space-y-3">
+            <ul className="divide-y divide-neutral-100">
               {topProducts.map(([title, v]) => (
-                <li key={title} className="flex items-center justify-between gap-2 text-sm">
+                <li key={title} className="flex items-center justify-between gap-2 px-5 py-3 text-sm">
                   <div className="min-w-0">
-                    <p className="truncate font-medium text-ink">{title}</p>
-                    <p className="text-xs text-muted">{v.qty} orders</p>
+                    <p className="truncate font-medium text-neutral-900">{title}</p>
+                    <p className="text-xs text-neutral-500">{v.qty} sold</p>
                   </div>
-                  <p className="shrink-0 font-bold text-ink">{formatRs(v.revenue)}</p>
+                  <p className="shrink-0 font-medium text-neutral-900">{formatRs(v.revenue)}</p>
                 </li>
               ))}
             </ul>
           )}
-        </div>
+        </Card>
       </div>
     </div>
   );

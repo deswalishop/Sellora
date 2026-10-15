@@ -1,24 +1,12 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { DashNav } from "@/features/dashboard/dash-nav";
 import { signOutAction } from "@/features/auth/actions";
 
-const NAV = [
-  { href: "/overview", label: "Overview" },
-  { href: "/orders", label: "Orders" },
-  { href: "/products", label: "Products" },
-  { href: "/customers", label: "Customers" },
-  { href: "/store", label: "Store" },
-  { href: "/marketing", label: "Marketing" },
-  { href: "/whatsapp", label: "WhatsApp" },
-  { href: "/analytics", label: "Analytics" },
-  { href: "/payments", label: "Payments" },
-  { href: "/coupons", label: "Coupons" },
-  { href: "/staff", label: "Staff" },
-  { href: "/settings", label: "Settings" },
-];
-
-/** Seller dashboard shell (PRD section 12). Only Products is functional in M1.3. */
+/**
+ * Shopify-admin-style seller shell: slim top bar, icon sidebar with grouped
+ * nav, light-gray content canvas.
+ */
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
   const {
@@ -33,52 +21,62 @@ export default async function DashboardLayout({ children }: { children: React.Re
     .limit(1)
     .maybeSingle();
   if (!store) redirect("/onboarding");
-  const storeName = (store as { name: string }).name;
+  const s = store as { id: string; name: string; slug: string };
 
   return (
-    <div className="min-h-screen bg-canvas">
-      {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 hidden w-60 flex-col border-r border-slate-200 bg-white md:flex">
-        <div className="border-b border-slate-200 px-5 py-5">
-          <p className="text-lg font-bold tracking-tight text-emerald-950">Sellora</p>
-          <p className="mt-0.5 truncate text-xs text-muted">{storeName}</p>
+    <div className="min-h-screen bg-[#f1f1f1] text-neutral-900 antialiased">
+      {/* Top bar */}
+      <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-neutral-200 bg-white px-4">
+        <span className="flex h-8 w-8 items-center justify-center rounded-md bg-neutral-900 text-sm font-bold text-white">
+          S
+        </span>
+        <div className="min-w-0">
+          <p className="truncate text-sm font-semibold leading-tight">{s.name}</p>
+          <p className="text-xs leading-tight text-neutral-500">sellora.com</p>
         </div>
-        <nav className="flex-1 space-y-1 overflow-y-auto p-3">
-          {NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="block rounded-xl px-3 py-2 text-sm font-medium text-muted transition hover:bg-canvas hover:text-ink"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-        <div className="border-t border-slate-200 p-3">
-          <form action={signOutAction}>
-            <button
-              type="submit"
-              className="w-full rounded-xl px-3 py-2 text-left text-sm font-medium text-muted transition hover:bg-red-50 hover:text-red-700"
-            >
-              Sign out
-            </button>
-          </form>
+        <div className="mx-auto hidden max-w-md flex-1 md:block">
+          <div className="flex h-9 items-center gap-2 rounded-md border border-neutral-200 bg-neutral-100 px-3 text-sm text-neutral-500">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+            Search
+            <kbd className="ml-auto rounded border border-neutral-300 bg-white px-1.5 text-[11px]">⌘K</kbd>
+          </div>
         </div>
-      </aside>
-
-      {/* Mobile top bar */}
-      <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 px-4 py-3 backdrop-blur md:hidden">
-        <div className="flex items-center justify-between">
-          <p className="font-bold text-emerald-950">Sellora</p>
-          <Link href="/products" className="text-sm font-medium text-muted">
-            Products
-          </Link>
-        </div>
+        <a
+          href={`/s/${s.slug}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="ml-auto hidden items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 md:ml-0 md:flex"
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><path d="M15 3h6v6" /><path d="M10 14 21 3" /></svg>
+          View store
+        </a>
+        <form action={signOutAction}>
+          <button
+            type="submit"
+            className="rounded-md px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100"
+          >
+            Sign out
+          </button>
+        </form>
       </header>
 
-      <main className="md:pl-60">
-        <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">{children}</div>
-      </main>
+      <div className="flex">
+        {/* Sidebar */}
+        <aside className="sticky top-14 hidden h-[calc(100vh-3.5rem)] w-60 shrink-0 overflow-y-auto border-r border-neutral-200 bg-white px-3 py-4 md:block">
+          <DashNav />
+        </aside>
+
+        {/* Content */}
+        <main className="min-w-0 flex-1">
+          <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">{children}</div>
+        </main>
+      </div>
+
+      {/* Mobile bottom nav */}
+      <nav className="fixed inset-x-0 bottom-0 z-30 flex border-t border-neutral-200 bg-white md:hidden">
+        <DashNav mobile />
+      </nav>
+      <div className="h-16 md:hidden" />
     </div>
   );
 }

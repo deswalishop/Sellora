@@ -22,26 +22,26 @@ export default async function AdminSubscriptions() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-ink">Subscriptions</h1>
-      <p className="mt-1 text-sm text-muted">
+      <h1 className="text-2xl font-bold text-neutral-900">Subscriptions</h1>
+      <p className="mt-1 text-sm text-neutral-500">
         Manual billing: after receiving payment (bank/Easypaisa/JazzCash), set the plan here.
       </p>
-      <div className="mt-6 overflow-hidden rounded-3xl border border-slate-200/70 bg-white">
+      <div className="mt-6 overflow-hidden rounded-xl border border-neutral-200/70 bg-white">
         <ul className="divide-y divide-slate-100">
           {subs.map((s) => (
             <li key={s.id} className="space-y-3 px-5 py-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <p className="text-sm font-semibold text-ink">{s.stores.name}</p>
-                  <p className="text-xs text-muted">
+                  <p className="text-sm font-semibold text-neutral-900">{s.stores.name}</p>
+                  <p className="text-xs text-neutral-500">
                     {s.plans.name} · Rs. {s.plans.price_monthly_pkr.toLocaleString("en-PK")}/mo
                   </p>
                 </div>
-                <span className={`rounded-full px-2.5 py-1 text-xs font-bold capitalize ${s.status === "active" ? "bg-emerald-100 text-emerald-800" : s.status === "trialing" ? "bg-blue-100 text-blue-800" : "bg-slate-200 text-slate-600"}`}>
+                <span className={`rounded-full px-2.5 py-1 text-xs font-bold capitalize ${s.status === "active" ? "bg-emerald-100 text-emerald-800" : s.status === "trialing" ? "bg-blue-100 text-blue-800" : "bg-neutral-200 text-slate-600"}`}>
                   {s.status}
                 </span>
               </div>
-              <p className="text-xs text-muted">
+              <p className="text-xs text-neutral-500">
                 {s.status === "trialing" && s.trial_ends_at
                   ? `Trial ends ${new Date(s.trial_ends_at).toLocaleDateString("en-PK", { day: "numeric", month: "short" })}`
                   : s.current_period_ends_at
@@ -51,7 +51,7 @@ export default async function AdminSubscriptions() {
               <SubscriptionActions subscriptionId={s.id} />
             </li>
           ))}
-          {subs.length === 0 && <li className="px-5 py-10 text-center text-sm text-muted">No subscriptions yet.</li>}
+          {subs.length === 0 && <li className="px-5 py-10 text-center text-sm text-neutral-500">No subscriptions yet.</li>}
         </ul>
       </div>
     </div>

@@ -48,17 +48,17 @@ export default async function NewOrderPage() {
   return (
     <div className="space-y-6">
       <div>
-        <Link href="/orders" className="text-sm font-medium text-muted hover:text-ink">← Orders</Link>
-        <h1 className="mt-1 text-2xl font-bold text-ink">New manual order</h1>
-        <p className="mt-1 text-sm text-muted">
+        <Link href="/orders" className="text-sm font-medium text-neutral-500 hover:text-neutral-900">← Orders</Link>
+        <h1 className="mt-1 text-2xl font-bold text-neutral-900">New manual order</h1>
+        <p className="mt-1 text-sm text-neutral-500">
           Record a sale that happened on WhatsApp, Instagram, or phone.
         </p>
       </div>
       {options.length === 0 ? (
-        <div className="rounded-3xl border border-slate-200 bg-white p-12 text-center">
-          <p className="font-semibold text-ink">No products yet</p>
-          <p className="mt-1 text-sm text-muted">Add products before creating manual orders.</p>
-          <Link href="/products/new" className="mt-4 inline-block text-sm font-semibold text-emerald-950 hover:underline">
+        <div className="rounded-xl border border-neutral-200 bg-white p-12 text-center">
+          <p className="font-semibold text-neutral-900">No products yet</p>
+          <p className="mt-1 text-sm text-neutral-500">Add products before creating manual orders.</p>
+          <Link href="/products/new" className="mt-4 inline-block text-sm font-semibold text-neutral-900 hover:underline">
             Add a product →
           </Link>
         </div>

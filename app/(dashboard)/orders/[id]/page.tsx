@@ -3,16 +3,17 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { formatRs } from "@/lib/format";
 import { OrderActions } from "@/features/orders/order-actions";
+import { PageHeader, Card, Badge } from "@/features/dashboard/ui";
 
-const STATUS_STYLES: Record<string, string> = {
-  pending: "bg-amber-100 text-amber-800",
-  confirmed: "bg-blue-100 text-blue-800",
-  packed: "bg-violet-100 text-violet-800",
-  shipped: "bg-indigo-100 text-indigo-800",
-  delivered: "bg-emerald-100 text-emerald-800",
-  cancelled: "bg-red-100 text-red-700",
-  returned: "bg-slate-200 text-slate-600",
-  refunded: "bg-slate-200 text-slate-600",
+const STATUS_TONE: Record<string, "success" | "attention" | "warning" | "critical" | "info" | "neutral"> = {
+  pending: "attention",
+  confirmed: "info",
+  packed: "info",
+  shipped: "warning",
+  delivered: "success",
+  cancelled: "critical",
+  returned: "neutral",
+  refunded: "neutral",
 };
 
 const METHOD_LABELS: Record<string, string> = {
@@ -68,78 +69,72 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
     .order("created_at", { ascending: true });
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <Link href="/orders" className="text-sm font-medium text-muted hover:text-ink">← Orders</Link>
-          <h1 className="mt-1 font-mono text-2xl font-bold text-ink">#{o.order_number}</h1>
-          <p className="mt-1 text-sm text-muted">
-            {new Date(o.created_at).toLocaleDateString("en-PK", { day: "numeric", month: "long", hour: "numeric", minute: "2-digit" })}
-            {" · via "}{o.source}
-          </p>
-        </div>
-        <span className={`rounded-full px-4 py-2 text-sm font-bold capitalize ${STATUS_STYLES[o.status] ?? "bg-slate-100 text-muted"}`}>
-          {o.status}
-        </span>
-      </div>
+    <div>
+      <PageHeader
+        title={`#${o.order_number}`}
+        subtitle={`${new Date(o.created_at).toLocaleDateString("en-PK", { day: "numeric", month: "long", hour: "numeric", minute: "2-digit" })} · via ${o.source}`}
+        actions={<Badge tone={STATUS_TONE[o.status] ?? "neutral"}>{o.status}</Badge>}
+      />
+      <p className="mb-5 -mt-3 text-sm">
+        <Link href="/orders" className="text-neutral-500 hover:text-neutral-900 hover:underline">← All orders</Link>
+      </p>
 
       <div className="grid gap-4 xl:grid-cols-3">
         <div className="space-y-4 xl:col-span-2">
-          <div className="rounded-3xl border border-slate-200 bg-white p-6">
-            <p className="mb-4 font-semibold text-ink">Items</p>
-            <ul className="divide-y divide-slate-100">
+          <Card title="Items">
+            <ul className="divide-y divide-neutral-100 px-5">
               {(items as { title: string; variant_name: string | null; quantity: number; unit_price: number }[] ?? []).map((it, i) => (
-                <li key={i} className="flex justify-between gap-3 py-2.5 text-sm">
-                  <span className="text-ink">
+                <li key={i} className="flex justify-between gap-3 py-3 text-sm">
+                  <span className="text-neutral-900">
                     <span className="font-medium">{it.title}</span>
-                    {it.variant_name && <span className="text-muted"> ({it.variant_name})</span>}
-                    <span className="text-muted"> × {it.quantity}</span>
+                    {it.variant_name && <span className="text-neutral-500"> ({it.variant_name})</span>}
+                    <span className="text-neutral-500"> × {it.quantity}</span>
                   </span>
-                  <span className="font-semibold text-ink">{formatRs(it.unit_price * it.quantity)}</span>
+                  <span className="font-medium text-neutral-900">{formatRs(it.unit_price * it.quantity)}</span>
                 </li>
               ))}
             </ul>
-            <div className="mt-4 space-y-1.5 border-t border-slate-100 pt-4 text-sm">
-              <div className="flex justify-between text-muted"><span>Subtotal</span><span>{formatRs(o.subtotal)}</span></div>
-              <div className="flex justify-between text-muted"><span>Delivery</span><span>{o.delivery_fee === 0 ? "FREE" : formatRs(o.delivery_fee)}</span></div>
-              {o.discount > 0 && <div className="flex justify-between text-muted"><span>Discount</span><span>−{formatRs(o.discount)}</span></div>}
-              <div className="flex justify-between pt-1 text-base font-bold text-ink"><span>Total</span><span>{formatRs(o.total)}</span></div>
-              <div className="flex justify-between text-muted"><span>Payment</span><span>{METHOD_LABELS[o.payment_method] ?? o.payment_method} · {o.payment_status}</span></div>
+            <div className="space-y-1.5 border-t border-neutral-100 px-5 py-4 text-sm">
+              <div className="flex justify-between text-neutral-600"><span>Subtotal</span><span>{formatRs(o.subtotal)}</span></div>
+              <div className="flex justify-between text-neutral-600"><span>Delivery</span><span>{o.delivery_fee === 0 ? "Free" : formatRs(o.delivery_fee)}</span></div>
+              {o.discount > 0 && <div className="flex justify-between text-neutral-600"><span>Discount</span><span>−{formatRs(o.discount)}</span></div>}
+              <div className="flex justify-between pt-1 text-base font-semibold text-neutral-900"><span>Total</span><span>{formatRs(o.total)}</span></div>
+              <div className="flex justify-between text-neutral-600"><span>Payment</span><span>{METHOD_LABELS[o.payment_method] ?? o.payment_method} · {o.payment_status}</span></div>
             </div>
             {o.notes && (
-              <div className="mt-4 rounded-xl bg-canvas p-3 text-sm text-muted">
-                <span className="font-semibold text-ink">Note: </span>{o.notes}
-              </div>
+              <p className="border-t border-neutral-100 px-5 py-3 text-sm text-neutral-600">
+                <span className="font-medium text-neutral-900">Note: </span>{o.notes}
+              </p>
             )}
-          </div>
+          </Card>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <div className="rounded-3xl border border-slate-200 bg-white p-6">
-              <p className="mb-3 font-semibold text-ink">Customer</p>
-              <p className="text-sm font-medium text-ink">{o.customer_name}</p>
-              <p className="mt-1 text-sm text-muted" dir="ltr">{o.customer_phone}</p>
-              {o.customer_email && <p className="mt-1 text-sm text-muted">{o.customer_email}</p>}
-              <p className="mt-3 text-sm text-muted">{o.shipping_address}{o.shipping_area ? `, ${o.shipping_area}` : ""}, {o.shipping_city}</p>
-            </div>
-            <div className="rounded-3xl border border-slate-200 bg-white p-6">
-              <p className="mb-3 font-semibold text-ink">Status history</p>
+            <Card title="Customer">
+              <div className="px-5 py-4">
+                <p className="text-sm font-medium text-neutral-900">{o.customer_name}</p>
+                <p className="mt-1 text-sm text-neutral-600" dir="ltr">{o.customer_phone}</p>
+                {o.customer_email && <p className="mt-1 text-sm text-neutral-600">{o.customer_email}</p>}
+                <p className="mt-3 text-sm text-neutral-600">{o.shipping_address}{o.shipping_area ? `, ${o.shipping_area}` : ""}, {o.shipping_city}</p>
+              </div>
+            </Card>
+            <Card title="Timeline">
               {(history as { from_status: string | null; to_status: string; note: string | null; created_at: string }[] ?? []).length === 0 ? (
-                <p className="text-sm text-muted">No updates yet.</p>
+                <p className="px-5 py-4 text-sm text-neutral-500">No updates yet.</p>
               ) : (
-                <ul className="space-y-2 text-sm">
+                <ul className="space-y-2.5 px-5 py-4 text-sm">
                   {(history as { from_status: string | null; to_status: string; note: string | null; created_at: string }[]).map((h, i) => (
                     <li key={i} className="flex justify-between gap-2">
-                      <span className="text-muted">
-                        {h.from_status ? `${h.from_status} → ` : ""}<span className="font-semibold capitalize text-ink">{h.to_status}</span>
+                      <span className="text-neutral-500">
+                        {h.from_status ? `${h.from_status} → ` : ""}<span className="font-medium capitalize text-neutral-900">{h.to_status}</span>
                       </span>
-                      <span className="shrink-0 text-xs text-muted">
+                      <span className="shrink-0 text-xs text-neutral-400">
                         {new Date(h.created_at).toLocaleDateString("en-PK", { day: "numeric", month: "short" })}
                       </span>
                     </li>
                   ))}
                 </ul>
               )}
-            </div>
+            </Card>
           </div>
         </div>
 

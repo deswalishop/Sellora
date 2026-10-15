@@ -30,10 +30,10 @@ export default async function NewProductPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-5">
       <div>
-        <Link href="/products" className="text-sm font-medium text-muted hover:text-ink">
+        <Link href="/products" className="text-sm font-medium text-neutral-500 hover:text-neutral-900">
           ← Back to products
         </Link>
-        <h1 className="mt-2 text-2xl font-bold text-ink">Add product</h1>
+        <h1 className="mt-2 text-2xl font-bold text-neutral-900">Add product</h1>
       </div>
       <Card>
         <ProductForm categories={categories} />

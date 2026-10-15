@@ -78,26 +78,26 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
   return (
     <div className="mx-auto max-w-2xl space-y-5">
       <div>
-        <Link href="/products" className="text-sm font-medium text-muted hover:text-ink">
+        <Link href="/products" className="text-sm font-medium text-neutral-500 hover:text-neutral-900">
           ← Back to products
         </Link>
-        <h1 className="mt-2 text-2xl font-bold text-ink">Edit product</h1>
+        <h1 className="mt-2 text-2xl font-bold text-neutral-900">Edit product</h1>
       </div>
 
       <Card>
-        <h2 className="mb-4 font-semibold text-ink">Details</h2>
+        <h2 className="mb-4 font-semibold text-neutral-900">Details</h2>
         <ProductForm productId={id} initial={initial} categories={categories} />
       </Card>
 
       <Card>
-        <h2 className="mb-1 font-semibold text-ink">Images</h2>
-        <p className="mb-4 text-sm text-muted">Showcase your product — first image is the main one.</p>
+        <h2 className="mb-1 font-semibold text-neutral-900">Images</h2>
+        <p className="mb-4 text-sm text-neutral-500">Showcase your product — first image is the main one.</p>
         <ImageUploader productId={id} images={images} />
       </Card>
 
       <Card>
-        <h2 className="mb-1 font-semibold text-ink">Variants</h2>
-        <p className="mb-4 text-sm text-muted">Sizes, colors or any custom options — each with its own price and stock.</p>
+        <h2 className="mb-1 font-semibold text-neutral-900">Variants</h2>
+        <p className="mb-4 text-sm text-neutral-500">Sizes, colors or any custom options — each with its own price and stock.</p>
         <VariantEditor productId={id} initial={variants} />
       </Card>
     </div>
