@@ -11,7 +11,10 @@ export interface CardProduct {
   product_images: { storage_path: string }[];
 }
 
-/** Product card (PRD section 25): image, name, price, discount. */
+/**
+ * Dawn-style product card: borderless, image with soft backdrop, small
+ * badges, title + price underneath.
+ */
 export function ProductCard({
   slug,
   product,
@@ -22,50 +25,52 @@ export function ProductCard({
   brandColor: string;
 }) {
   const img = product.product_images?.[0]?.storage_path;
-  const discount =
-    product.sale_price != null
-      ? Math.round((1 - product.sale_price / product.regular_price) * 100)
-      : 0;
+  const onSale = product.sale_price != null && product.sale_price < product.regular_price;
 
   return (
-    <Link
-      href={`/s/${slug}/products/${product.slug}`}
-      className="group overflow-hidden rounded-2xl border border-slate-200/70 bg-white transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(6,95,70,0.10)]"
-    >
-      <div className="relative aspect-square overflow-hidden bg-canvas">
-        {img ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={productImageUrl(img, 500)}
-            alt={product.title}
-            loading="lazy"
-            className="h-full w-full object-cover transition-transform group-hover:scale-105"
-          />
-        ) : (
-          <div
-            className="flex h-full w-full items-center justify-center text-4xl font-bold"
-            style={{ color: `${brandColor}55` }}
-          >
-            {product.title.charAt(0).toUpperCase()}
-          </div>
-        )}
-        {discount > 0 && (
-          <span className="absolute left-2 top-2 rounded-full bg-red-600 px-2 py-0.5 text-[11px] font-bold text-white">
-            -{discount}%
+    <Link href={`/s/${slug}/products/${product.slug}`} className="group block">
+      <div className="relative overflow-hidden rounded-lg bg-neutral-100">
+        <div className="aspect-[4/5] w-full">
+          {img ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={productImageUrl(img, 600)}
+              alt={product.title}
+              loading="lazy"
+              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          ) : (
+            <div
+              className="flex h-full w-full items-center justify-center text-5xl font-semibold text-neutral-300"
+            >
+              {product.title.charAt(0).toUpperCase()}
+            </div>
+          )}
+        </div>
+        {onSale && (
+          <span className="absolute left-3 top-3 rounded-full bg-red-700 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-white">
+            Sale
           </span>
         )}
       </div>
-      <div className="p-3">
-        <p className="truncate text-sm font-semibold text-ink">{product.title}</p>
-        <p className="mt-1 text-sm font-bold" style={{ color: brandColor }}>
-          {formatRs(product.sale_price ?? product.regular_price)}
-          {product.sale_price != null && (
-            <span className="ml-2 text-xs font-normal text-muted line-through">
+      <div className="px-1 pt-3">
+        <p className="text-[13px] text-neutral-500">{/* vendor slot */}</p>
+        <h3 className="text-[15px] font-normal leading-snug text-neutral-900 group-hover:underline underline-offset-4">
+          {product.title}
+        </h3>
+        <p className="mt-1 flex items-baseline gap-2 text-[15px]">
+          <span className={onSale ? "font-medium text-red-700" : "text-neutral-900"}>
+            {formatRs(product.sale_price ?? product.regular_price)}
+          </span>
+          {onSale && (
+            <span className="text-[13px] text-neutral-500 line-through">
               {formatRs(product.regular_price)}
             </span>
           )}
         </p>
       </div>
+      {/* keep brand color available for quick-add accents via CSS var */}
+      <span className="hidden" style={{ color: brandColor }} aria-hidden="true" />
     </Link>
   );
 }

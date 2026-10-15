@@ -14,7 +14,7 @@ export interface DetailVariant {
   stock: number;
 }
 
-/** Interactive buyer panel: gallery, variants, quantity, cart actions. */
+/** Dawn-style product page: breadcrumbs, media gallery, buy panel, accordions. */
 export function ProductBuyer({
   slug,
   productId,
@@ -22,6 +22,7 @@ export function ProductBuyer({
   regularPrice,
   salePrice,
   stock,
+  description,
   images,
   variants,
   brandColor,
@@ -34,6 +35,7 @@ export function ProductBuyer({
   regularPrice: number;
   salePrice: number | null;
   stock: number;
+  description: string | null;
   images: string[];
   variants: DetailVariant[];
   brandColor: string;
@@ -43,11 +45,13 @@ export function ProductBuyer({
   const { add } = useCart();
   const router = useRouter();
   const [imgIdx, setImgIdx] = useState(0);
-  const [variantId, setVariantId] = useState<string | null>(variants.length > 0 ? null : null);
+  const [variantId, setVariantId] = useState<string | null>(null);
   const [qty, setQty] = useState(1);
+  const [openAcc, setOpenAcc] = useState<string | null>("desc");
 
   const variant = variants.find((v) => v.id === variantId) ?? null;
   const price = variant?.price_override ?? salePrice ?? regularPrice;
+  const onSale = salePrice != null && salePrice < regularPrice;
   const available = variant ? variant.stock : stock;
   const canBuy = available > 0 && (variants.length === 0 || variant !== null);
 
@@ -73,156 +77,201 @@ export function ProductBuyer({
     );
   }
 
+  const acc = (id: string, label: string, body: React.ReactNode) => (
+    <div className="border-t border-neutral-200 last:border-b">
+      <button
+        onClick={() => setOpenAcc(openAcc === id ? null : id)}
+        className="flex w-full items-center justify-between py-4 text-left text-[15px] font-medium text-neutral-900"
+        aria-expanded={openAcc === id}
+      >
+        {label}
+        <span className="text-neutral-500">{openAcc === id ? "−" : "+"}</span>
+      </button>
+      {openAcc === id && <div className="pb-5 text-sm leading-relaxed text-neutral-600">{body}</div>}
+    </div>
+  );
+
   return (
-    <div className="grid gap-8 md:grid-cols-2">
-      {/* Gallery */}
-      <div>
-        <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white">
-          {images.length > 0 ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={productImageUrl(images[imgIdx], 900)}
-              alt={title}
-              className="aspect-square w-full object-cover"
-            />
-          ) : (
-            <div
-              className="flex aspect-square w-full items-center justify-center text-7xl font-bold"
-              style={{ color: `${brandColor}44` }}
-            >
-              {title.charAt(0).toUpperCase()}
-            </div>
-          )}
-        </div>
-        {images.length > 1 && (
-          <div className="mt-3 flex gap-2 overflow-x-auto">
-            {images.map((p, i) => (
-              <button
-                key={p}
-                onClick={() => setImgIdx(i)}
-                className={`h-16 w-16 shrink-0 overflow-hidden rounded-xl border-2 transition ${
-                  i === imgIdx ? "border-transparent" : "border-slate-200 opacity-70"
-                }`}
-                style={i === imgIdx ? { borderColor: brandColor } : undefined}
-                aria-label={`View image ${i + 1}`}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={productImageUrl(p, 160)} alt="" className="h-full w-full object-cover" loading="lazy" />
-              </button>
-            ))}
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+      {/* Breadcrumbs */}
+      <nav className="mb-6 text-[13px] text-neutral-500" aria-label="Breadcrumb">
+        <a href={`/s/${slug}`} className="hover:text-neutral-900 hover:underline">Home</a>
+        <span className="mx-2">/</span>
+        <a href={`/s/${slug}/products`} className="hover:text-neutral-900 hover:underline">Catalog</a>
+        <span className="mx-2">/</span>
+        <span className="text-neutral-900">{title}</span>
+      </nav>
+
+      <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
+        {/* Gallery */}
+        <div>
+          <div className="overflow-hidden rounded-lg bg-neutral-100">
+            {images.length > 0 ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={productImageUrl(images[imgIdx], 1000)}
+                alt={title}
+                className="aspect-square w-full object-cover"
+              />
+            ) : (
+              <div className="flex aspect-square w-full items-center justify-center text-8xl font-semibold text-neutral-300">
+                {title.charAt(0).toUpperCase()}
+              </div>
+            )}
           </div>
-        )}
-      </div>
-
-      {/* Info */}
-      <div>
-        <h1 className="text-2xl font-bold text-ink sm:text-3xl">{title}</h1>
-        <div className="mt-3 flex items-baseline gap-3">
-          <p className="text-2xl font-bold" style={{ color: brandColor }}>
-            {formatRs(price)}
-          </p>
-          {salePrice != null && (
-            <p className="text-lg text-muted line-through">{formatRs(regularPrice)}</p>
-          )}
-        </div>
-        <p className={`mt-2 text-sm font-medium ${available > 0 ? "text-emerald-700" : "text-red-600"}`}>
-          {available > 0 ? (available <= 5 ? `Only ${available} left in stock` : "In stock") : "Out of stock"}
-        </p>
-        {codAvailable && (
-          <span className="mt-3 inline-block rounded-full bg-brand-mint px-3 py-1 text-xs font-semibold text-emerald-950">
-            Cash on Delivery available
-          </span>
-        )}
-
-        {variants.length > 0 && (
-          <div className="mt-5">
-            <p className="mb-2 text-sm font-medium text-ink">Choose an option</p>
-            <div className="flex flex-wrap gap-2">
-              {variants.map((v) => (
+          {images.length > 1 && (
+            <div className="mt-3 grid grid-cols-5 gap-3">
+              {images.map((p, i) => (
                 <button
-                  key={v.id}
-                  onClick={() => setVariantId(v.id)}
-                  disabled={v.stock <= 0}
-                  className={`rounded-full border px-4 py-2 text-sm font-medium transition disabled:opacity-40 ${
-                    variantId === v.id ? "text-white" : "border-slate-300 bg-white text-ink"
+                  key={p}
+                  onClick={() => setImgIdx(i)}
+                  className={`overflow-hidden rounded-md border bg-neutral-100 transition ${
+                    i === imgIdx ? "border-neutral-900" : "border-transparent opacity-70 hover:opacity-100"
                   }`}
-                  style={variantId === v.id ? { backgroundColor: brandColor, borderColor: brandColor } : undefined}
+                  aria-label={`View image ${i + 1}`}
                 >
-                  {v.name}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={productImageUrl(p, 200)} alt="" className="aspect-square w-full object-cover" loading="lazy" />
                 </button>
               ))}
             </div>
-            {variants.length > 0 && !variant && (
-              <p className="mt-2 text-xs text-muted">Please choose an option first.</p>
-            )}
-          </div>
-        )}
-
-        <div className="mt-5 flex items-center gap-3">
-          <p className="text-sm font-medium text-ink">Quantity</p>
-          <div className="flex items-center rounded-full border border-slate-300">
-            <button
-              onClick={() => setQty((q) => Math.max(1, q - 1))}
-              className="flex h-10 w-10 items-center justify-center text-lg font-bold text-muted hover:text-ink"
-              aria-label="Decrease quantity"
-            >
-              −
-            </button>
-            <span className="w-8 text-center text-sm font-bold">{qty}</span>
-            <button
-              onClick={() => setQty((q) => Math.min(Math.max(available, 1), q + 1))}
-              className="flex h-10 w-10 items-center justify-center text-lg font-bold text-muted hover:text-ink"
-              aria-label="Increase quantity"
-            >
-              +
-            </button>
-          </div>
-        </div>
-
-        <div className="mt-6 space-y-3">
-          <button
-            onClick={addToCart}
-            disabled={!canBuy}
-            className="h-12 w-full rounded-xl font-semibold text-white transition hover:brightness-110 disabled:opacity-40"
-            style={{ backgroundColor: brandColor }}
-          >
-            Add to Cart
-          </button>
-          <button
-            onClick={() => {
-              addToCart();
-              router.push(`/s/${slug}/cart`);
-            }}
-            disabled={!canBuy}
-            className="h-12 w-full rounded-xl border-2 font-semibold transition disabled:opacity-40"
-            style={{ borderColor: brandColor, color: brandColor }}
-          >
-            Buy Now
-          </button>
-          {waLink && (
-            <a
-              href={waLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex h-12 w-full items-center justify-center rounded-xl bg-[#25D366] font-semibold text-white transition hover:brightness-95"
-            >
-              Order on WhatsApp
-            </a>
           )}
         </div>
 
-        <ShareButtons
-          title={title}
-          url={typeof window !== "undefined" ? window.location.href : ""}
-          brandColor={brandColor}
-        />
+        {/* Buy panel */}
+        <div>
+          {onSale && (
+            <span className="mb-3 inline-block rounded-full bg-red-700 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white">
+              Sale
+            </span>
+          )}
+          <h1 className="text-3xl font-normal tracking-tight text-neutral-900 sm:text-4xl">{title}</h1>
 
-        <div className="mt-6 rounded-2xl bg-white p-4 text-sm text-muted border border-slate-200">
-          <p className="font-semibold text-ink">Delivery information</p>
-          <ul className="mt-2 list-disc space-y-1 pl-5">
-            <li>Delivery across Pakistan in 3–5 working days.</li>
-            <li>For returns or exchange, contact the seller directly.</li>
-          </ul>
+          <div className="mt-3 flex items-baseline gap-3">
+            <p className={`text-2xl ${onSale ? "text-red-700" : "text-neutral-900"}`}>{formatRs(price)}</p>
+            {onSale && (
+              <p className="text-lg text-neutral-500 line-through">{formatRs(regularPrice)}</p>
+            )}
+          </div>
+
+          <p className="mt-2 text-sm">
+            {available > 0 ? (
+              <span className="inline-flex items-center gap-1.5 text-neutral-700">
+                <span className="h-2 w-2 rounded-full bg-green-600" />
+                {available <= 5 ? `Only ${available} left in stock` : "In stock, ready to ship"}
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 text-red-700">
+                <span className="h-2 w-2 rounded-full bg-red-600" /> Sold out
+              </span>
+            )}
+          </p>
+
+          {variants.length > 0 && (
+            <div className="mt-6">
+              <p className="mb-2 text-sm text-neutral-700">
+                Option: <span className="font-medium text-neutral-900">{variant?.name ?? "—"}</span>
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {variants.map((v) => (
+                  <button
+                    key={v.id}
+                    onClick={() => setVariantId(v.id)}
+                    disabled={v.stock <= 0}
+                    className={`min-w-11 rounded-full border px-4 py-2.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-40 ${
+                      variantId === v.id
+                        ? "border-neutral-900 bg-neutral-900 text-white"
+                        : "border-neutral-300 bg-white text-neutral-900 hover:border-neutral-900"
+                    }`}
+                  >
+                    {v.name}
+                  </button>
+                ))}
+              </div>
+              {variants.length > 0 && !variant && (
+                <p className="mt-2 text-[13px] text-neutral-500">Please select an option.</p>
+              )}
+            </div>
+          )}
+
+          <div className="mt-6">
+            <label htmlFor="qty" className="mb-2 block text-sm text-neutral-700">Quantity</label>
+            <div className="inline-flex items-center rounded border border-neutral-300">
+              <button
+                onClick={() => setQty((q) => Math.max(1, q - 1))}
+                className="px-3.5 py-2.5 text-lg text-neutral-600 hover:bg-neutral-100"
+                aria-label="Decrease quantity"
+              >
+                −
+              </button>
+              <span id="qty" className="w-10 text-center text-[15px]">{qty}</span>
+              <button
+                onClick={() => setQty((q) => Math.min(Math.max(available, 1), q + 1))}
+                className="px-3.5 py-2.5 text-lg text-neutral-600 hover:bg-neutral-100"
+                aria-label="Increase quantity"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-6 space-y-3">
+            <button
+              onClick={addToCart}
+              disabled={!canBuy}
+              className="w-full rounded py-4 text-[15px] font-medium text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
+              style={{ backgroundColor: brandColor }}
+            >
+              Add to cart
+            </button>
+            <button
+              onClick={() => {
+                addToCart();
+                router.push(`/s/${slug}/checkout`);
+              }}
+              disabled={!canBuy}
+              className="w-full rounded border border-neutral-900 bg-white py-4 text-[15px] font-medium text-neutral-900 transition hover:bg-neutral-900 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Buy it now
+            </button>
+            {waLink && (
+              <a
+                href={waLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex w-full items-center justify-center gap-2 rounded bg-[#25D366] py-4 text-[15px] font-medium text-white transition hover:brightness-95"
+              >
+                Order on WhatsApp
+              </a>
+            )}
+          </div>
+
+          {codAvailable && (
+            <p className="mt-4 text-sm text-neutral-600">
+              ✓ Cash on Delivery available across Pakistan
+            </p>
+          )}
+
+          <div className="mt-6">
+            {description &&
+              acc("desc", "Description", <p className="whitespace-pre-line">{description}</p>)}
+            {acc(
+              "ship",
+              "Shipping & returns",
+              <p>
+                Orders are dispatched within 1–2 working days. Cash on delivery available nationwide.
+                7-day easy exchange on unused items.
+              </p>
+            )}
+          </div>
+
+          <div className="mt-6">
+            <ShareButtons
+              title={title}
+              url={typeof window !== "undefined" ? window.location.href : ""}
+              brandColor={brandColor}
+            />
+          </div>
         </div>
       </div>
     </div>
