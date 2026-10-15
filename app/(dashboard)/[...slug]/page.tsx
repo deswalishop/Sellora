@@ -7,11 +7,11 @@ export default async function ComingSoon({ params }: { params: Promise<{ slug: s
   const label = slug[0]?.charAt(0).toUpperCase() + slug[0]?.slice(1) || "Section";
   return (
     <Card className="text-center">
-      <h1 className="text-xl font-bold text-ink">{label}</h1>
-      <p className="mt-2 text-sm text-muted">
+      <h1 className="text-xl font-bold text-neutral-900">{label}</h1>
+      <p className="mt-2 text-sm text-neutral-500">
         This section is coming in the next milestone. Products are ready now:
       </p>
-      <Link href="/products" className="mt-4 inline-block text-sm font-semibold text-emerald-950 hover:underline">
+      <Link href="/products" className="mt-4 inline-block text-sm font-semibold text-neutral-900 hover:underline">
         Go to Products →
       </Link>
     </Card>

@@ -20,7 +20,7 @@ function LoginForm() {
   return (
     <>
       {checkEmail && (
-        <p className="mt-4 rounded-xl bg-brand-mint px-4 py-3 text-sm text-emerald-950">
+        <p className="mt-4 rounded-xl bg-green-50 px-4 py-3 text-sm text-neutral-900">
           Account created! Please check your email to confirm, then sign in.
         </p>
       )}
@@ -38,7 +38,7 @@ function LoginForm() {
         </Button>
       </form>
 
-      <div className="my-5 flex items-center gap-3 text-xs text-muted">
+      <div className="my-5 flex items-center gap-3 text-xs text-neutral-500">
         <span className="h-px flex-1 bg-slate-200" /> or <span className="h-px flex-1 bg-slate-200" />
       </div>
 
@@ -48,9 +48,9 @@ function LoginForm() {
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-muted">
+      <p className="mt-6 text-center text-sm text-neutral-500">
         New to Sellora?{" "}
-        <Link href="/signup" className="font-semibold text-emerald-950 hover:underline">
+        <Link href="/signup" className="font-semibold text-neutral-900 hover:underline">
           Create an account
         </Link>
       </p>
@@ -61,8 +61,8 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <Card>
-      <h1 className="text-xl font-bold text-ink">Welcome back</h1>
-      <p className="mt-1 text-sm text-muted">Sign in to manage your store.</p>
+      <h1 className="text-xl font-bold text-neutral-900">Welcome back</h1>
+      <p className="mt-1 text-sm text-neutral-500">Sign in to manage your store.</p>
       <Suspense>
         <LoginForm />
       </Suspense>

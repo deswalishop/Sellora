@@ -31,17 +31,17 @@ export default async function AdminOverview() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-ink">Platform overview</h1>
-      <p className="mt-1 text-sm text-muted">Manual billing (D1): activate plans below after receiving payment.</p>
+      <h1 className="text-2xl font-bold text-neutral-900">Platform overview</h1>
+      <p className="mt-1 text-sm text-neutral-500">Manual billing (D1): activate plans below after receiving payment.</p>
       <div className="mt-6 grid grid-cols-2 gap-4 xl:grid-cols-5">
         {cards.map(([l, v]) => (
-          <div key={l} className="rounded-3xl border border-slate-200/70 bg-white p-5">
-            <p className="text-xs font-medium uppercase tracking-wide text-muted">{l}</p>
-            <p className="mt-2 text-2xl font-bold text-ink">{v}</p>
+          <div key={l} className="rounded-xl border border-neutral-200/70 bg-white p-5">
+            <p className="text-xs font-medium uppercase tracking-wide text-neutral-500">{l}</p>
+            <p className="mt-2 text-2xl font-bold text-neutral-900">{v}</p>
           </div>
         ))}
       </div>
-      <div className="mt-6 rounded-3xl border border-amber-200 bg-amber-50 p-5 text-sm">
+      <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-5 text-sm">
         <p className="font-bold text-amber-900">Trial expiry job</p>
         <p className="mt-1 text-amber-800">
           Expired trials are downgraded by calling <code className="font-mono">POST /api/cron/expire-trials</code> with

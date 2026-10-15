@@ -14,8 +14,8 @@ export default function SignupPage() {
 
   return (
     <Card>
-      <h1 className="text-xl font-bold text-ink">Create your account</h1>
-      <p className="mt-1 text-sm text-muted">
+      <h1 className="text-xl font-bold text-neutral-900">Create your account</h1>
+      <p className="mt-1 text-sm text-neutral-500">
         Start your 14-day Business trial. No credit card needed.
       </p>
 
@@ -49,7 +49,7 @@ export default function SignupPage() {
         </Button>
       </form>
 
-      <div className="my-5 flex items-center gap-3 text-xs text-muted">
+      <div className="my-5 flex items-center gap-3 text-xs text-neutral-500">
         <span className="h-px flex-1 bg-slate-200" /> or <span className="h-px flex-1 bg-slate-200" />
       </div>
 
@@ -59,9 +59,9 @@ export default function SignupPage() {
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-muted">
+      <p className="mt-6 text-center text-sm text-neutral-500">
         Already have an account?{" "}
-        <Link href="/login" className="font-semibold text-emerald-950 hover:underline">
+        <Link href="/login" className="font-semibold text-neutral-900 hover:underline">
           Sign in
         </Link>
       </p>
