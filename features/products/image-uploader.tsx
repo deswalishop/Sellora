@@ -59,7 +59,7 @@ export function ImageUploader({
       )}
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
         {images.map((img, i) => (
-          <div key={img.id} className="relative overflow-hidden rounded-xl border border-slate-200">
+          <div key={img.id} className="relative overflow-hidden rounded-xl border border-neutral-200">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={productImageUrl(img.storage_path, 300)}
@@ -68,7 +68,7 @@ export function ImageUploader({
               loading="lazy"
             />
             {i === 0 && (
-              <span className="absolute left-2 top-2 rounded-full bg-emerald-950 px-2 py-0.5 text-[10px] font-semibold text-white">
+              <span className="absolute left-2 top-2 rounded-full bg-neutral-900 px-2 py-0.5 text-[10px] font-semibold text-white">
                 Main
               </span>
             )}
@@ -87,7 +87,7 @@ export function ImageUploader({
             type="button"
             onClick={() => fileRef.current?.click()}
             disabled={pending}
-            className="flex aspect-square flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-slate-300 text-sm font-medium text-muted transition hover:border-brand-light hover:text-emerald-950 disabled:opacity-50"
+            className="flex aspect-square flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-slate-300 text-sm font-medium text-neutral-500 transition hover:border-brand-light hover:text-neutral-900 disabled:opacity-50"
           >
             <span className="text-2xl">+</span>
             {pending ? "Uploading…" : "Add image"}
@@ -101,7 +101,7 @@ export function ImageUploader({
         className="hidden"
         onChange={onFile}
       />
-      <p className="text-xs text-muted">
+      <p className="text-xs text-neutral-500">
         {images.length}/{MAX_IMAGES_PER_PRODUCT} images · max 5MB each · first image is the main one.
       </p>
     </div>

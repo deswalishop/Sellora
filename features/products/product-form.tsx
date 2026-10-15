@@ -65,14 +65,14 @@ export function ProductForm({ productId, initial, categories }: ProductFormProps
         <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
       )}
       {saved && (
-        <p className="rounded-xl bg-brand-mint px-4 py-3 text-sm text-emerald-950">
+        <p className="rounded-xl bg-green-50 px-4 py-3 text-sm text-neutral-900">
           Saved successfully.
         </p>
       )}
 
       <Input label="Product name" name="title" defaultValue={String(v("title"))} placeholder="e.g. Premium Lawn Suit" required />
       <div>
-        <label className="mb-1.5 block text-sm font-medium text-ink" htmlFor="description">
+        <label className="mb-1.5 block text-sm font-medium text-neutral-900" htmlFor="description">
           Description
         </label>
         <textarea
@@ -81,13 +81,13 @@ export function ProductForm({ productId, initial, categories }: ProductFormProps
           rows={4}
           defaultValue={String(initial?.description ?? "")}
           placeholder="Fabric, sizing, care instructions…"
-          className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-ink placeholder:text-muted/60 focus:border-brand-light focus:outline-none focus:ring-2 focus:ring-brand-light/30"
+          className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-500/60 focus:border-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-300"
         />
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-ink" htmlFor="categoryName">
+          <label className="mb-1.5 block text-sm font-medium text-neutral-900" htmlFor="categoryName">
             Category
           </label>
           <input
@@ -96,7 +96,7 @@ export function ProductForm({ productId, initial, categories }: ProductFormProps
             list="category-list"
             defaultValue={String(initial?.categoryName ?? "")}
             placeholder="e.g. Women's Fashion"
-            className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-ink placeholder:text-muted/60 focus:border-brand-light focus:outline-none focus:ring-2 focus:ring-brand-light/30"
+            className="h-11 w-full rounded-xl border border-neutral-200 bg-white px-4 text-sm text-neutral-900 placeholder:text-neutral-500/60 focus:border-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-300"
           />
           <datalist id="category-list">
             {categories.map((c) => (
@@ -118,12 +118,12 @@ export function ProductForm({ productId, initial, categories }: ProductFormProps
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-ink" htmlFor="status">Status</label>
+          <label className="mb-1.5 block text-sm font-medium text-neutral-900" htmlFor="status">Status</label>
           <select
             id="status"
             name="status"
             defaultValue={String(initial?.status ?? "active")}
-            className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-ink focus:border-brand-light focus:outline-none focus:ring-2 focus:ring-brand-light/30"
+            className="h-11 w-full rounded-xl border border-neutral-200 bg-white px-4 text-sm text-neutral-900 focus:border-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-300"
           >
             <option value="active">Active — visible in store</option>
             <option value="hidden">Hidden — not visible</option>
@@ -137,7 +137,7 @@ export function ProductForm({ productId, initial, categories }: ProductFormProps
             defaultChecked={Boolean(initial?.isFeatured)}
             className="h-5 w-5 rounded accent-emerald-800"
           />
-          <span className="text-sm font-medium text-ink">Featured product</span>
+          <span className="text-sm font-medium text-neutral-900">Featured product</span>
         </label>
       </div>
 

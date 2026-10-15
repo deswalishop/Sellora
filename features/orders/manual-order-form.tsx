@@ -100,13 +100,13 @@ export function ManualOrderForm({ products }: { products: ProductOption[] }) {
       <div className="space-y-4 lg:col-span-3">
         {error && <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6">
-          <h2 className="mb-4 font-bold text-ink">Products</h2>
+        <div className="rounded-xl border border-neutral-200 bg-white p-6">
+          <h2 className="mb-4 font-bold text-neutral-900">Products</h2>
           <div className="flex gap-2">
             <select
               value={picker}
               onChange={(e) => setPicker(e.target.value)}
-              className="h-11 flex-1 rounded-xl border border-slate-200 bg-white px-4 text-sm text-ink focus:border-brand-light focus:outline-none"
+              className="h-11 flex-1 rounded-xl border border-neutral-200 bg-white px-4 text-sm text-neutral-900 focus:border-neutral-900 focus:outline-none"
             >
               <option value="">Select a product…</option>
               {products.map((p) => (
@@ -127,17 +127,17 @@ export function ManualOrderForm({ products }: { products: ProductOption[] }) {
           {lines.length > 0 && (
             <ul className="mt-4 space-y-2">
               {lines.map((l) => (
-                <li key={l.key} className="flex items-center gap-3 rounded-xl bg-canvas p-3 text-sm">
+                <li key={l.key} className="flex items-center gap-3 rounded-xl bg-neutral-100 p-3 text-sm">
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-medium text-ink">
-                      {l.title}{l.variantName && <span className="text-muted"> ({l.variantName})</span>}
+                    <p className="truncate font-medium text-neutral-900">
+                      {l.title}{l.variantName && <span className="text-neutral-500"> ({l.variantName})</span>}
                     </p>
-                    <p className="text-xs text-muted">{formatRs(l.unitPrice)} each · {l.maxStock} in stock</p>
+                    <p className="text-xs text-neutral-500">{formatRs(l.unitPrice)} each · {l.maxStock} in stock</p>
                   </div>
                   <div className="flex items-center rounded-full border border-slate-300 bg-white">
-                    <button type="button" onClick={() => setLines((ls) => ls.map((x) => x.key === l.key ? { ...x, qty: Math.max(1, x.qty - 1) } : x))} className="flex h-7 w-7 items-center justify-center font-bold text-muted">−</button>
+                    <button type="button" onClick={() => setLines((ls) => ls.map((x) => x.key === l.key ? { ...x, qty: Math.max(1, x.qty - 1) } : x))} className="flex h-7 w-7 items-center justify-center font-bold text-neutral-500">−</button>
                     <span className="w-7 text-center text-xs font-bold">{l.qty}</span>
-                    <button type="button" onClick={() => setLines((ls) => ls.map((x) => x.key === l.key ? { ...x, qty: Math.min(x.maxStock, x.qty + 1) } : x))} className="flex h-7 w-7 items-center justify-center font-bold text-muted">+</button>
+                    <button type="button" onClick={() => setLines((ls) => ls.map((x) => x.key === l.key ? { ...x, qty: Math.min(x.maxStock, x.qty + 1) } : x))} className="flex h-7 w-7 items-center justify-center font-bold text-neutral-500">+</button>
                   </div>
                   <button type="button" onClick={() => setLines((ls) => ls.filter((x) => x.key !== l.key))} className="text-xs font-medium text-red-600 hover:underline">
                     Remove
@@ -148,8 +148,8 @@ export function ManualOrderForm({ products }: { products: ProductOption[] }) {
           )}
         </div>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6">
-          <h2 className="mb-4 font-bold text-ink">Customer</h2>
+        <div className="rounded-xl border border-neutral-200 bg-white p-6">
+          <h2 className="mb-4 font-bold text-neutral-900">Customer</h2>
           <div className="space-y-4">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Input label="Full name" name="fullName" placeholder="e.g. Ahmed Raza" required />
@@ -165,17 +165,17 @@ export function ManualOrderForm({ products }: { products: ProductOption[] }) {
       </div>
 
       <div className="lg:col-span-2">
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 lg:sticky lg:top-6">
-          <h2 className="mb-4 font-bold text-ink">Order details</h2>
+        <div className="rounded-xl border border-neutral-200 bg-white p-6 lg:sticky lg:top-6">
+          <h2 className="mb-4 font-bold text-neutral-900">Order details</h2>
           <div className="mb-4">
-            <p className="mb-2 text-sm font-medium text-ink">Where did this sale happen?</p>
+            <p className="mb-2 text-sm font-medium text-neutral-900">Where did this sale happen?</p>
             <div className="grid grid-cols-2 gap-2">
               {SOURCES.map((s) => (
                 <button
                   key={s.value}
                   type="button"
                   onClick={() => setSource(s.value)}
-                  className={`rounded-xl border px-3 py-2.5 text-sm font-medium transition ${source === s.value ? "border-emerald-950 bg-emerald-950 text-white" : "border-slate-200 text-muted hover:text-ink"}`}
+                  className={`rounded-xl border px-3 py-2.5 text-sm font-medium transition ${source === s.value ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-200 text-neutral-500 hover:text-neutral-900"}`}
                 >
                   {s.label}
                 </button>
@@ -183,11 +183,11 @@ export function ManualOrderForm({ products }: { products: ProductOption[] }) {
             </div>
           </div>
           <div className="mb-4">
-            <p className="mb-2 text-sm font-medium text-ink">Payment method</p>
+            <p className="mb-2 text-sm font-medium text-neutral-900">Payment method</p>
             <select
               value={payment}
               onChange={(e) => setPayment(e.target.value)}
-              className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-ink focus:border-brand-light focus:outline-none"
+              className="h-11 w-full rounded-xl border border-neutral-200 bg-white px-4 text-sm text-neutral-900 focus:border-neutral-900 focus:outline-none"
             >
               <option value="cod">Cash on Delivery</option>
               <option value="bank_transfer">Bank Transfer</option>
@@ -197,10 +197,10 @@ export function ManualOrderForm({ products }: { products: ProductOption[] }) {
             </select>
           </div>
           <div className="flex justify-between border-t border-slate-100 pt-4 text-base font-bold">
-            <span className="text-ink">Total</span>
-            <span className="text-emerald-950">{formatRs(subtotal)}</span>
+            <span className="text-neutral-900">Total</span>
+            <span className="text-neutral-900">{formatRs(subtotal)}</span>
           </div>
-          <p className="mt-1 text-xs text-muted">Delivery fee: {formatRs(0)} (add manually in notes if needed)</p>
+          <p className="mt-1 text-xs text-neutral-500">Delivery fee: {formatRs(0)} (add manually in notes if needed)</p>
           <Button type="submit" loading={pending} size="lg" className="mt-4">
             Create order
           </Button>

@@ -66,14 +66,14 @@ export function VariantEditor({
         <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
       )}
       {saved && (
-        <p className="rounded-xl bg-brand-mint px-4 py-3 text-sm text-emerald-950">
+        <p className="rounded-xl bg-green-50 px-4 py-3 text-sm text-neutral-900">
           Variants saved.
         </p>
       )}
       {rows.map((r) => (
         <div
           key={r.key}
-          className="grid grid-cols-2 gap-3 rounded-2xl border border-slate-200 bg-canvas p-3 sm:grid-cols-6"
+          className="grid grid-cols-2 gap-3 rounded-lg border border-neutral-200 bg-neutral-100 p-3 sm:grid-cols-6"
         >
           <Input
             label="Option 1"
@@ -136,7 +136,7 @@ export function VariantEditor({
           Save variants
         </Button>
       </div>
-      <p className="text-xs text-muted">
+      <p className="text-xs text-neutral-500">
         Leave price empty to use the product&apos;s price. Variants with no options are ignored.
       </p>
     </div>

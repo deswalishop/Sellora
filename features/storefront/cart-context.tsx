@@ -21,6 +21,8 @@ interface CartContextValue {
   clear: () => void;
   count: number;
   subtotal: number;
+  drawerOpen: boolean;
+  setDrawerOpen: (open: boolean) => void;
 }
 
 const Ctx = createContext<CartContextValue | null>(null);
@@ -58,6 +60,7 @@ export function CartProvider({ slug, children }: { slug: string; children: React
       if (found) return prev.map((i) => (i.key === key ? { ...i, qty: Math.min(i.qty + qty, 100) } : i));
       return [...prev, { ...item, key, qty: Math.min(qty, 100) }];
     });
+    setDrawerOpen(true); // Dawn: open the cart drawer on add
   };
 
   const remove = (key: string) => setItems((prev) => prev.filter((i) => i.key !== key));
@@ -68,6 +71,7 @@ export function CartProvider({ slug, children }: { slug: string; children: React
   };
 
   const clear = () => setItems([]);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
     <Ctx.Provider
@@ -79,6 +83,8 @@ export function CartProvider({ slug, children }: { slug: string; children: React
         clear,
         count: items.reduce((n, i) => n + i.qty, 0),
         subtotal: items.reduce((n, i) => n + i.qty * i.price, 0),
+        drawerOpen,
+        setDrawerOpen,
       }}
     >
       {children}

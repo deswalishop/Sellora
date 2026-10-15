@@ -59,12 +59,12 @@ function Toggle({
       role="switch"
       aria-checked={checked}
       onClick={() => onChange(!checked)}
-      className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-left"
+      className="flex w-full items-center justify-between rounded-xl border border-neutral-200 bg-white px-4 py-3 text-left"
     >
-      <span className="text-sm font-medium text-ink">{label}</span>
+      <span className="text-sm font-medium text-neutral-900">{label}</span>
       <span
         className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${
-          checked ? "bg-emerald-950" : "bg-slate-300"
+          checked ? "bg-neutral-900" : "bg-slate-300"
         }`}
       >
         <span
@@ -176,14 +176,14 @@ export function OnboardingWizard({ initialBusinessName, initialWhatsapp }: Wizar
     );
     return (
       <Card className="text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-mint">
-          <span className="text-2xl font-bold text-emerald-950">✓</span>
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-50">
+          <span className="text-2xl font-bold text-neutral-900">✓</span>
         </div>
-        <h1 className="mt-4 text-2xl font-bold text-ink">Your store is ready!</h1>
-        <p className="mt-2 text-sm text-muted">
+        <h1 className="mt-4 text-2xl font-bold text-neutral-900">Your store is ready!</h1>
+        <p className="mt-2 text-sm text-neutral-500">
           Share the link below with your customers on WhatsApp and Instagram.
         </p>
-        <p className="mt-4 break-all rounded-xl bg-canvas px-4 py-3 font-mono text-sm text-emerald-950">
+        <p className="mt-4 break-all rounded-xl bg-neutral-100 px-4 py-3 font-mono text-sm text-neutral-900">
           {storeUrl}
         </p>
         <div className="mt-6 space-y-3">
@@ -205,7 +205,7 @@ export function OnboardingWizard({ initialBusinessName, initialWhatsapp }: Wizar
           </a>
           <a
             href={`/s/${launchedSlug}`}
-            className="inline-flex h-12 w-full items-center justify-center rounded-xl bg-emerald-950 px-6 text-[15px] font-semibold text-white transition-all hover:bg-emerald-950/90"
+            className="inline-flex h-12 w-full items-center justify-center rounded-xl bg-neutral-900 px-6 text-[15px] font-semibold text-white transition-all hover:bg-neutral-900/90"
           >
             Preview my store
           </a>
@@ -225,20 +225,20 @@ export function OnboardingWizard({ initialBusinessName, initialWhatsapp }: Wizar
                 <div
                   className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
                     i < step
-                      ? "bg-emerald-950 text-white"
+                      ? "bg-neutral-900 text-white"
                       : i === step
-                        ? "bg-brand-mint text-emerald-950 ring-2 ring-brand-light"
-                        : "bg-slate-100 text-muted"
+                        ? "bg-green-50 text-neutral-900 ring-2 ring-brand-light"
+                        : "bg-neutral-100 text-neutral-500"
                   }`}
                 >
                   {i < step ? "✓" : i + 1}
                 </div>
-                <span className="mt-1 hidden text-[11px] font-medium text-muted sm:block">
+                <span className="mt-1 hidden text-[11px] font-medium text-neutral-500 sm:block">
                   {label}
                 </span>
               </div>
               {i < STEPS.length - 1 && (
-                <div className={`mx-1 h-0.5 flex-1 rounded ${i < step ? "bg-emerald-950" : "bg-slate-200"}`} />
+                <div className={`mx-1 h-0.5 flex-1 rounded ${i < step ? "bg-neutral-900" : "bg-slate-200"}`} />
               )}
             </div>
           ))}
@@ -252,7 +252,7 @@ export function OnboardingWizard({ initialBusinessName, initialWhatsapp }: Wizar
       {/* Step 1 — Business info */}
       {step === 0 && (
         <div className="space-y-4">
-          <h1 className="text-xl font-bold text-ink">Tell us about your business</h1>
+          <h1 className="text-xl font-bold text-neutral-900">Tell us about your business</h1>
           <Input
             label="Business name"
             value={data.businessName}
@@ -260,11 +260,11 @@ export function OnboardingWizard({ initialBusinessName, initialWhatsapp }: Wizar
             placeholder="e.g. Ayesha's Boutique"
           />
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-ink">Category</label>
+            <label className="mb-1.5 block text-sm font-medium text-neutral-900">Category</label>
             <select
               value={data.category}
               onChange={(e) => set("category", e.target.value)}
-              className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-ink focus:border-brand-light focus:outline-none focus:ring-2 focus:ring-brand-light/30"
+              className="h-11 w-full rounded-xl border border-neutral-200 bg-white px-4 text-sm text-neutral-900 focus:border-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-300"
             >
               <option value="">Select a category…</option>
               {CATEGORIES.map((c) => (
@@ -294,7 +294,7 @@ export function OnboardingWizard({ initialBusinessName, initialWhatsapp }: Wizar
       {/* Step 2 — Store identity */}
       {step === 1 && (
         <div className="space-y-4">
-          <h1 className="text-xl font-bold text-ink">Name your store</h1>
+          <h1 className="text-xl font-bold text-neutral-900">Name your store</h1>
           <Input
             label="Store name"
             value={data.storeName}
@@ -313,11 +313,11 @@ export function OnboardingWizard({ initialBusinessName, initialWhatsapp }: Wizar
               onChange={(e) => set("slug", slugify(e.target.value))}
               placeholder="your-store-name"
             />
-            <p className="mt-1.5 text-xs text-muted">
+            <p className="mt-1.5 text-xs text-neutral-500">
               Your store will live at{" "}
-              <span className="font-mono text-ink">{data.slug || "your-store"}.sellora.com</span>
+              <span className="font-mono text-neutral-900">{data.slug || "your-store"}.sellora.com</span>
             </p>
-            {checkingSlug && <p className="mt-1.5 text-xs text-muted">Checking availability…</p>}
+            {checkingSlug && <p className="mt-1.5 text-xs text-neutral-500">Checking availability…</p>}
             {slugState && !checkingSlug && (
               <p className={`mt-1.5 text-xs font-medium ${slugState.available ? "text-emerald-700" : "text-red-600"}`}>
                 {slugState.message}
@@ -325,7 +325,7 @@ export function OnboardingWizard({ initialBusinessName, initialWhatsapp }: Wizar
             )}
           </div>
           <div>
-            <span className="mb-1.5 block text-sm font-medium text-ink">Brand color</span>
+            <span className="mb-1.5 block text-sm font-medium text-neutral-900">Brand color</span>
             <div className="flex gap-3">
               {BRAND_COLORS.map((c) => (
                 <button
@@ -347,8 +347,8 @@ export function OnboardingWizard({ initialBusinessName, initialWhatsapp }: Wizar
       {/* Step 3 — First product */}
       {step === 2 && (
         <div className="space-y-4">
-          <h1 className="text-xl font-bold text-ink">Add your first product</h1>
-          <p className="-mt-2 text-sm text-muted">You can add more from your dashboard later.</p>
+          <h1 className="text-xl font-bold text-neutral-900">Add your first product</h1>
+          <p className="-mt-2 text-sm text-neutral-500">You can add more from your dashboard later.</p>
           <Input
             label="Product name"
             value={data.productName}
@@ -379,8 +379,8 @@ export function OnboardingWizard({ initialBusinessName, initialWhatsapp }: Wizar
       {/* Step 4 — Payments */}
       {step === 3 && (
         <div className="space-y-3">
-          <h1 className="text-xl font-bold text-ink">How do you take payments?</h1>
-          <p className="-mt-1 text-sm text-muted">Customers will see these options at checkout.</p>
+          <h1 className="text-xl font-bold text-neutral-900">How do you take payments?</h1>
+          <p className="-mt-1 text-sm text-neutral-500">Customers will see these options at checkout.</p>
           <Toggle checked={data.codEnabled} onChange={(v) => set("codEnabled", v)} label="Cash on Delivery" />
           <Toggle checked={data.bankEnabled} onChange={(v) => set("bankEnabled", v)} label="Bank transfer" />
           {data.bankEnabled && (
@@ -424,13 +424,13 @@ export function OnboardingWizard({ initialBusinessName, initialWhatsapp }: Wizar
       {/* Step 5 — Review & launch */}
       {step === 4 && (
         <div className="space-y-4">
-          <h1 className="text-xl font-bold text-ink">Ready to launch?</h1>
-          <dl className="space-y-2 rounded-2xl bg-canvas p-4 text-sm">
-            <div className="flex justify-between"><dt className="text-muted">Business</dt><dd className="font-medium text-ink">{data.businessName}</dd></div>
-            <div className="flex justify-between"><dt className="text-muted">Store</dt><dd className="font-medium text-ink">{data.storeName}</dd></div>
-            <div className="flex justify-between"><dt className="text-muted">URL</dt><dd className="font-mono font-medium text-ink">{data.slug}.sellora.com</dd></div>
-            <div className="flex justify-between"><dt className="text-muted">First product</dt><dd className="font-medium text-ink">{data.productName} — Rs {data.productPrice.toLocaleString()}</dd></div>
-            <div className="flex justify-between"><dt className="text-muted">Trial</dt><dd className="font-medium text-emerald-700">14-day Business plan</dd></div>
+          <h1 className="text-xl font-bold text-neutral-900">Ready to launch?</h1>
+          <dl className="space-y-2 rounded-2xl bg-neutral-100 p-4 text-sm">
+            <div className="flex justify-between"><dt className="text-neutral-500">Business</dt><dd className="font-medium text-neutral-900">{data.businessName}</dd></div>
+            <div className="flex justify-between"><dt className="text-neutral-500">Store</dt><dd className="font-medium text-neutral-900">{data.storeName}</dd></div>
+            <div className="flex justify-between"><dt className="text-neutral-500">URL</dt><dd className="font-mono font-medium text-neutral-900">{data.slug}.sellora.com</dd></div>
+            <div className="flex justify-between"><dt className="text-neutral-500">First product</dt><dd className="font-medium text-neutral-900">{data.productName} — Rs {data.productPrice.toLocaleString()}</dd></div>
+            <div className="flex justify-between"><dt className="text-neutral-500">Trial</dt><dd className="font-medium text-emerald-700">14-day Business plan</dd></div>
           </dl>
           <Button size="lg" loading={launching} onClick={launch}>
             Launch my store

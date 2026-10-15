@@ -57,8 +57,8 @@ export function OrderActions({
       {error && <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
 
       {next.length > 0 && (
-        <div className="rounded-3xl border border-slate-200 bg-white p-5">
-          <p className="mb-3 text-sm font-semibold text-ink">Update status</p>
+        <div className="rounded-xl border border-neutral-200 bg-white p-5">
+          <p className="mb-3 text-sm font-semibold text-neutral-900">Update status</p>
           <div className="flex flex-wrap gap-2">
             {next.map((s) => (
               <button
@@ -74,7 +74,7 @@ export function OrderActions({
                 className={`rounded-full px-4 py-2 text-sm font-semibold transition disabled:opacity-50 ${
                   s === "cancelled"
                     ? "border border-red-300 text-red-700 hover:bg-red-50"
-                    : "bg-emerald-950 text-white hover:bg-emerald-950/90"
+                    : "bg-neutral-900 text-white hover:bg-neutral-700"
                 }`}
               >
                 {NEXT_LABELS[s] ?? s}
@@ -84,9 +84,9 @@ export function OrderActions({
         </div>
       )}
 
-      <div className="rounded-3xl border border-slate-200 bg-white p-5">
-        <p className="mb-1 text-sm font-semibold text-ink">Message customer on WhatsApp</p>
-        <p className="mb-3 text-xs text-muted">Opens WhatsApp with a prefilled message — free, no API needed.</p>
+      <div className="rounded-xl border border-neutral-200 bg-white p-5">
+        <p className="mb-1 text-sm font-semibold text-neutral-900">Message customer on WhatsApp</p>
+        <p className="mb-3 text-xs text-neutral-500">Opens WhatsApp with a prefilled message — free, no API needed.</p>
         <div className="flex flex-wrap gap-2">
           {(
             [
@@ -102,7 +102,7 @@ export function OrderActions({
               href={waLink(customerPhone, waTemplate(kind, vars))}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full border border-emerald-800/30 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-950 transition hover:bg-emerald-100"
+              className="rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm font-semibold text-neutral-800 transition hover:border-neutral-500"
             >
               {label} 💬
             </a>
@@ -111,18 +111,18 @@ export function OrderActions({
       </div>
 
       {stepIndex >= 0 && (
-        <div className="rounded-3xl border border-slate-200 bg-white p-5">
-          <p className="mb-4 text-sm font-semibold text-ink">Progress</p>
+        <div className="rounded-xl border border-neutral-200 bg-white p-5">
+          <p className="mb-4 text-sm font-semibold text-neutral-900">Progress</p>
           <ol>
             {TIMELINE.map((t, i) => (
               <li key={t} className="relative flex gap-3 pb-5 last:pb-0">
                 {i < TIMELINE.length - 1 && (
-                  <span className={`absolute left-[11px] top-6 h-full w-0.5 ${i < stepIndex ? "bg-emerald-800" : "bg-slate-200"}`} />
+                  <span className={`absolute left-[11px] top-6 h-full w-0.5 ${i < stepIndex ? "bg-neutral-800" : "bg-neutral-200"}`} />
                 )}
-                <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${i <= stepIndex ? "bg-emerald-950 text-white" : "bg-slate-200 text-muted"}`}>
+                <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${i <= stepIndex ? "bg-neutral-900 text-white" : "bg-neutral-200 text-neutral-500"}`}>
                   {i <= stepIndex ? "✓" : i + 1}
                 </span>
-                <span className={`pt-0.5 text-sm capitalize ${i === stepIndex ? "font-bold text-ink" : i < stepIndex ? "text-ink" : "text-muted"}`}>
+                <span className={`pt-0.5 text-sm capitalize ${i === stepIndex ? "font-bold text-neutral-900" : i < stepIndex ? "text-neutral-900" : "text-neutral-500"}`}>
                   {t}
                 </span>
               </li>
